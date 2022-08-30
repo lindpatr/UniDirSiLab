@@ -132,6 +132,9 @@
 // [MODEM]$
 
 // $[CUSTOM_PIN_NAME]
+#define DEBUG_PORT                               gpioPortA
+#define DEBUG_PIN                                0
+
 // [CUSTOM_PIN_NAME]$
 
 #endif // PIN_CONFIG_H

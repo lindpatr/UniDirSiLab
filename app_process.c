@@ -46,15 +46,18 @@
 #include "app_task_init.h"
 #endif
 
+#include "em_gpio.h"
+#include "app_init.h"
+
 // -----------------------------------------------------------------------------
 //                              Macros and Typedefs
 // -----------------------------------------------------------------------------
-#define qMaster     1
+#define qMaster     0
 #define qPrintTX    0
 #define qPrintRX    0
 
 /// Size of RAIL RX/TX FIFO
-#define RAIL_FIFO_SIZE (256U)
+#define RAIL_FIFO_SIZE (512U)
 /// Transmit data length
 #define TX_PAYLOAD_LENGTH (06U)
 
@@ -176,6 +179,7 @@ void app_process_action(RAIL_Handle_t rail_handle)
     state = S_PACKET_RECEIVED;
   } else if (packet_sent) {
     packet_sent = false;
+    GPIO_PinOutClear(DEBUG_PORT, DEBUG_PIN);
     TX_tab[0]++;
     state = S_PACKET_SENT;
   } else if (rx_error) {
@@ -233,12 +237,12 @@ void app_process_action(RAIL_Handle_t rail_handle)
       break;
     case S_RX_PACKET_ERROR:
       // Handle Rx error
-      app_log_error("Radio RX Error occurred\nEvents: %llX\n", error_code);
+      app_log_error("RX Error (%llX)\n", error_code);
       state = S_IDLE;
       break;
     case S_TX_PACKET_ERROR:
       // Handle Tx error
-      app_log_error("Radio TX Error occurred\nEvents: %llX\n", error_code);
+      app_log_error("TX Error (%llX)\n", error_code);
       state = S_IDLE;
       break;
     case S_WAIT_TX:
@@ -254,6 +258,8 @@ void app_process_action(RAIL_Handle_t rail_handle)
         out_packet[4] =(TX_counter & 0x00FF0000) >>16;
         out_packet[5] =(TX_counter & 0xFF000000) >>24;
         prepare_package(rail_handle, out_packet, sizeof(out_packet));
+
+        GPIO_PinOutSet(DEBUG_PORT, DEBUG_PIN);
         rail_status = RAIL_StartTx(rail_handle, CHANNEL, RAIL_TX_OPTIONS_DEFAULT, NULL);
         if (rail_status != RAIL_STATUS_NO_ERROR) {
           app_log_warning("RAIL_StartTx() result:%d ", rail_status);
@@ -268,13 +274,13 @@ void app_process_action(RAIL_Handle_t rail_handle)
           float localStat = (float)(TX_counter-old_TX_counter) / 20.0f;
           float localStat2 =  (10.0f*10100.0f) / localStat;
           float localStat3 = 100.0f*(float)(TX_tab[1]+TX_tab[2]) / (float)TX_counter;
-          app_log_info("\nTX STATS\n");
-          app_log_info("--------\n");
-          app_log_info("OK:       %d\n",TX_tab[0]);
-          app_log_info("Error:    %d\n",TX_tab[1]);
-          app_log_info("Timeout:  %d\n",TX_tab[2]);
-          app_log_info("Err rate: %0.3f%%\n",localStat3);
-          app_log_info("TX Rate : %0.2f msg/s (boucle pour 100 slave: %0.2f ms)\n",localStat,localStat2);
+//          app_log_info("\nTX STATS\n");
+//          app_log_info("--------\n");
+//          app_log_info("TX OK:       %d\n",TX_tab[0]);
+//          app_log_info("TX Error:    %d\n",TX_tab[1]);
+//          app_log_info("TX Timeout:  %d\n",TX_tab[2]);
+//          app_log_info("TX Err rate: %0.3f%%\n",localStat3);
+          app_log_info("TX Rate :    %0.2f msg/s (100 slave: %0.2f ms)\n",localStat,localStat2);
           old_TX_counter = TX_counter;
 
           timeout = RAIL_GetTime() + 20000000;
@@ -289,13 +295,14 @@ void app_process_action(RAIL_Handle_t rail_handle)
 
           float localStat = (float)(RX_counter-old_RX_counter) / 20.0f;
           float localStat3 = 100.0f*(float)(RX_tab[1]+RX_tab[2]) / (float)RX_counter;
-          app_log_info("RX STATS\n");
-          app_log_info("--------\n");
-          app_log_info("OK:       %d\n",RX_tab[0]);
-          app_log_info("Error:    %d\n",RX_tab[1]);
-          app_log_info("Timeout:  %d\n",RX_tab[2]);
-          app_log_info("Err rate: %0.3f%%\n",localStat3);
-          app_log_info("RX Rate : %0.2f msg/s\n",localStat);
+//          app_log_info("RX STATS\n");
+//          app_log_info("--------\n");
+//          app_log_info("RX OK:       %d\n",RX_tab[0]);
+//          app_log_info("RX Error:    %d\n",RX_tab[1]);
+//          app_log_info("RX Timeout:  %d\n",RX_tab[2]);
+//          app_log_info("RX Err rate: %0.3f%%\n",localStat3);
+          app_log_info("RX Err rate: %0.3f%% (%d/%d)\n",localStat3,RX_tab[1],RX_tab[2]);
+//          app_log_info("RX Rate :    %0.2f msg/s\n",localStat);
           old_RX_counter = RX_counter;
 
           timeout = RAIL_GetTime() + 20000000;

@@ -50,6 +50,9 @@
 #include "app_task_init.h"
 #endif
 
+#include "em_gpio.h"
+#include "app_init.h"
+
 // -----------------------------------------------------------------------------
 //                              Macros and Typedefs
 // -----------------------------------------------------------------------------
@@ -98,6 +101,9 @@ RAIL_Handle_t app_init(void)
 #if defined(SL_CATALOG_LED1_PRESENT)
   sl_led_turn_off(&sl_led_led1);
 #endif
+
+  GPIO_PinModeSet(DEBUG_PORT, DEBUG_PIN, gpioModePushPull, RESET);
+
   // Start reception
   RAIL_Status_t status = RAIL_StartRx(rail_handle, CHANNEL, NULL);
   if (status != RAIL_STATUS_NO_ERROR) {
