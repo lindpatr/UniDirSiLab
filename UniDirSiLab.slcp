@@ -1,6 +1,6 @@
 # Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
-project_name: rail_soc_simple_trx
-label: rail_soc_simple_trx
+project_name: UniDirSiLab
+label: UniDirSiLab
 description: |-
   This application demonstrates the simplest exchange of transmit and receive operation between two nodes. Both nodes are capable of sending and receiving messages. On the WSTK, any button press (PB0/PB1) will send a message. LED0 will toggle on message send and LED1 will toggle on message receive. CLI can also be used for sending and showing received messages. To send enter 'tx' or 'send'. By default the received packets will be printed out in terminal, to enable or disable print enter 'rx 1' ('receive 1') or 'rx 0' ('receive 0') in terminal. With one click this baremetal sample app can be run on an OS, currently MicriumOS and FreeRTOS is supported.
   NOTE: Due to the higher current consumption of the continuous radio usage (especially in Rx Mode), it is not recommended to power the boards from a coin cell. Instead, an USB power bank can be used if portability is needed.

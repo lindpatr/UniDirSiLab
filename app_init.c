@@ -110,8 +110,22 @@ RAIL_Handle_t app_init(void)
     app_log_warning("After initialization RAIL_StartRx() result:%d ", status);
   }
 
+  // Print EM Microelectronic
+  const char string[] = "\nTest EFR32xG32 - ";
+  printf("%s", string);
+
+  // Print EM9305
+#if (qMaster)
+  const char string2[] = "Master";
+#else
+  const char string2[] = "Slave";
+#endif
+
+  const char string3[] = "OneWay";
+
   // CLI info message
-  print_sample_app_name("Simple TRX");
+  app_log_info("%s (%s)\n", string2, string3);
+  app_log_info("------------------------------\n");
 
   return rail_handle;
 }

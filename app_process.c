@@ -52,10 +52,6 @@
 // -----------------------------------------------------------------------------
 //                              Macros and Typedefs
 // -----------------------------------------------------------------------------
-#define qMaster     0
-#define qPrintTX    0
-#define qPrintRX    0
-
 /// Size of RAIL RX/TX FIFO
 #define RAIL_FIFO_SIZE (512U)
 /// Transmit data length

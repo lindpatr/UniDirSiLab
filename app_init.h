@@ -38,6 +38,12 @@
 // -----------------------------------------------------------------------------
 //                              Macros and Typedefs
 // -----------------------------------------------------------------------------
+// Compile directives
+#define qMaster     0
+#define qPrintTX    0
+#define qPrintRX    0
+
+// GPIO debug
 #define DEBUG_PIN   0
 #define DEBUG_PORT  gpioPortA
 #define SET         1
